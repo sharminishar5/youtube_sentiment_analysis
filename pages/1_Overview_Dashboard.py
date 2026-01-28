@@ -1,46 +1,37 @@
 import streamlit as st
-import matplotlib.pyplot as plt
+import pandas as pd
 import seaborn as sns
+import matplotlib.pyplot as plt
 from wordcloud import WordCloud
-from utils.data_loader import load_data
 
-df = load_data()
+st.set_page_config(layout="wide")
 
-st.header("Overview Dashboard")
+df = pd.read_csv("cleaned_youtube_comments.csv")
+df['Cleaned_Comment'] = df['Cleaned_Comment'].fillna("")
+df['Actual_Sentiment'] = df['Actual_Sentiment'].fillna("Unknown")
 
-# 1. Sentiment Distribution
+st.title("📊 Overview Dashboard")
+
+# Sentiment Distribution
 st.subheader("1. Sentiment Distribution")
-fig, ax = plt.subplots()
-sns.countplot(data=df, x="Actual_Sentiment", ax=ax)
-ax.set_title("Sentiment Distribution")
+fig, ax = plt.subplots(figsize=(4,3))
+sns.countplot(data=df, x='Actual_Sentiment', ax=ax)
 st.pyplot(fig)
 plt.clf()
 
-# 2. Sentiment Percentage
+# Sentiment Percentage
 st.subheader("2. Sentiment Percentage")
-sentiment_counts = df["Actual_Sentiment"].value_counts()
-
+counts = df['Actual_Sentiment'].value_counts()
 fig, ax = plt.subplots()
-ax.pie(
-    sentiment_counts,
-    labels=sentiment_counts.index,
-    autopct="%1.1f%%",
-    startangle=90
-)
-ax.axis("equal")
+ax.pie(counts, labels=counts.index, autopct='%1.1f%%')
 st.pyplot(fig)
 plt.clf()
 
-# 3. Word Cloud
-st.subheader("3. Word Cloud (Positive Comments)")
-positive_text = " ".join(
-    df[df["Actual_Sentiment"] == "positive"]["Cleaned_Comment"]
-)
-
-wordcloud = WordCloud(width=800, height=400, background_color="white").generate(positive_text)
-
+# WordCloud
+st.subheader("3. Positive Comments WordCloud")
+text = " ".join(df[df['Actual_Sentiment']=="positive"]['Cleaned_Comment'])
+wc = WordCloud(width=500, height=300).generate(text)
 fig, ax = plt.subplots()
-ax.imshow(wordcloud, interpolation="bilinear")
+ax.imshow(wc)
 ax.axis("off")
 st.pyplot(fig)
-

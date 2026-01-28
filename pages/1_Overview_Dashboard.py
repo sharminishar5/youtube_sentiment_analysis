@@ -29,17 +29,35 @@ st.markdown("""
 
 # Sentiment Percentage
 st.subheader("2. Sentiment Percentage")
-counts = df['Actual_Sentiment'].value_counts()
-fig, ax = plt.subplots()
-ax.pie(counts, labels=counts.index, autopct='%1.1f%%')
-st.pyplot(fig)
+sentiment_counts = df['Actual_Sentiment'].value_counts()
+fig, ax = plt.subplots(figsize=(3,3))
+ax.pie(sentiment_counts, labels=sentiment_counts.index, autopct='%1.1f%%')
+ax.set_title("Sentiment Percentage")
+st.pyplot(fig, use_container_width=False)
 plt.clf()
+st.markdown("""
+**Interpretation:**  
+- **Neutral:**  51.6% of total comments. This is the most dominant category with more than 20000 entries. It means that most engagement of the audience is factual or informational, which may be made up of time stamps, technical queries or even broad based comments.  
+- **Positive:** 38.2% of total comments. This is the second-largest segment, which represents about 15,000 instances. It indicates much community support, appreciation of the fans, and an overall positive reception of the video material.  
+- **Negative:** 10.2% of total comments. This is the least amount of data that consists of approximately 4,000 comments. The low percentage implies that there is little criticism or controversy in this particular society.  
+- **Key Findings:** The sentiment data indicates a vastly positive and well-being rich community environment. The neutral and positive feedback put together takes care of almost 90 percent of all interactions hence the content is effectively contributing to objective discussion and positive attitude instead of antagonism.
+    """)
 
 # WordCloud
 st.subheader("3. Positive Comments WordCloud")
-text = " ".join(df[df['Actual_Sentiment']=="positive"]['Cleaned_Comment'])
-wc = WordCloud(width=500, height=300).generate(text)
-fig, ax = plt.subplots()
-ax.imshow(wc)
+positive_text = " ".join(df[df['Actual_Sentiment']=="positive"]['Cleaned_Comment'])
+wordcloud = WordCloud(width=350, height=180).generate(positive_text)
+fig, ax = plt.subplots(figsize=(4,2))
+ax.imshow(wordcloud, interpolation='bilinear')
 ax.axis("off")
-st.pyplot(fig)
+ax.set_title("Positive Comments WordCloud")
+st.pyplot(fig, use_container_width=False)
+plt.clf()
+st.markdown("""
+**Interpretation:**  
+- **High-Intensity Appreciation:** Dominant terms such as "love," "best," "great," and "nice" confirm that the positive sentiment is driven by strong emotional satisfaction and high regard for the quality of the content.  
+- **Respectful Tone:** The frequent appearance of honorifics like "sir" and "bhai" (brother), along with "thank," indicates a culture of respect and personal connection between the audience and the creator.  
+- **Subject Matter Focus:** Keywords such as "video," "india," "government," and "people" suggest that positive engagement is often tied to discussions about national identity, current events, or social topics.  
+- **Encouraging Feedback:** Terms like "super," "amazing," and "support" showcase an active fan base that is eager to provide motivational feedback to the creator.  
+- **Key Findings:** The word cloud reveals that the community is not just "liking" the content but is deeply engaged with the specific topics presented, particularly those related to India and current affairs. The prevalence of respectful terms suggests a loyal, mature audience that views the creator as an authority or a peer.
+    """)
